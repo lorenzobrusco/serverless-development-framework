@@ -1,0 +1,3 @@
+C:\CRIF\Progetti\00 - Tests\50 - ASF\src\User.Service\obj\Debug\User.Service.njsproj.AssemblyReference.cache
+C:\CRIF\Progetti\00 - Tests\50 - ASF\src\User.Service\obj\Debug\User.Service.njsproj.CoreCompileInputs.cache
+C:\CRIF\Progetti\00 - Tests\50 - ASF\src\User.Service\bin\Microsoft.NodejsTools.WebRole.dll

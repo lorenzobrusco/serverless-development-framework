@@ -1,0 +1,150 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Transform: AWS::Serverless-2016-10-31
+
+Description: >
+  ASF Framework test
+
+Parameters:
+  CorsAllowOriginParameter:
+    Type: String
+    Default: "*"
+    Description: "CORS: Allow Origin"
+  CorsAllowHeadersParameter:
+    Type: String
+    Default: "*"
+    Description: "CORS: Allow Headers"
+  CorsAllowMethodsParameter:
+    Type: String
+    Default: "*"
+    Description: "CORS: Allow Methods"
+  PrivateSubnets:
+    Type: List<AWS::EC2::Subnet::Id>
+    Description: Private Subnets
+  SecurityGroup:
+    Type: List<AWS::EC2::SecurityGroup::Id>
+    Description: Private Security Groups
+  Environment:
+    Type: String
+    Description: Environment
+  BuildFolder:
+    Type: String
+    Default: "dist/"
+
+Globals:
+  Function:
+    MemorySize: 1024
+    Timeout: 60
+    Tracing: Active
+    VpcConfig:
+      SubnetIds: !Ref PrivateSubnets
+      SecurityGroupIds: !Ref SecurityGroup
+    Environment:
+      Variables:
+        AccountId: !Sub "${AWS::AccountId}"
+        Region: !Sub "${AWS::Region}"
+        Environment: !Ref Environment
+
+Resources:
+  #############################################################################################################
+  #                                                   GATEWAY                                                 #
+  #############################################################################################################
+  ApiGateway:
+    Type: AWS::Serverless::Api
+    Properties:
+      StageName: !Ref Environment
+      TracingEnabled: true
+      Models:
+        Fn::Transform:
+          Name: 'AWS::Include'
+          Parameters:
+            Location: User.Service/sam/models.yaml
+      Cors:
+        AllowOrigin: !Sub "'${CorsAllowOriginParameter}'"
+        AllowHeaders: !Sub "'${CorsAllowHeadersParameter}'"
+        AllowMethods: !Sub "'${CorsAllowMethodsParameter}'"
+        AllowCredentials: true
+      # Auth:
+      #   DefaultAuthorizer: IdpCognitoUserPool
+      #   AddDefaultAuthorizerToCorsPreflight: False
+      #   Authorizers:
+      #     IdpCognitoUserPool:
+      #       UserPoolArn: arn:aws:cognito-idp:eu-central-1:470732550276:userpool/eu-central-1_HF48ySQCk
+      #       Identity:
+      #         Header: Authorization
+
+  #############################################################################################################
+  #                                              MICROSERVICES                                                #
+  #############################################################################################################
+
+  UserNanoService:
+    Type: AWS::Serverless::Function
+    Properties:
+      FunctionName: UserNanoService
+      CodeUri: !Sub "User.Service/${BuildFolder}"
+      Handler: index.handler
+      Runtime: nodejs16.x
+      Architectures:
+        - arm64
+      Environment:
+        Variables:
+          NanoServiceName: "user"
+      Events:
+        GetUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /v1/api/user
+            Method: get
+
+        GetUserById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /v1/api/user/{userId}
+            Method: get
+            RequestParameters:
+              - method.request.path.userId:
+                  Required: true
+
+        DeleteUserById:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /v1/api/user/{userId}
+            Method: delete
+            RequestParameters:
+              - method.request.path.userId:
+                  Required: true
+
+        GetUserByIdFiltered:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /v1/api/user/{userId}/filter
+            Method: get
+            RequestParameters:
+              - method.request.path.userId:
+                  Required: true
+              - method.request.querystring.region:
+                  Required: true
+              - method.request.querystring.culture:
+                  Required: false
+
+        CreateUser:
+          Type: Api
+          Properties:
+            RestApiId: !Ref ApiGateway
+            Path: /v1/api/user
+            Method: post
+            RequestModel:
+              Model: CreateUserModel
+              Required: true
+              ValidateBody: true
+    Metadata:
+      BuildArchitecture: arm64
+      BuildMethod: nodejs16.x
+
+Outputs:
+  ApiGateway:
+    Description: "API Gateway endpoint URL for Prod stage for Hello World function"
+    Value: !Sub "https://${ApiGateway}.execute-api.${AWS::Region}.amazonaws.com/${Environment}/"

@@ -1,0 +1,10 @@
+CreateUserModel:
+  type: object
+  required:
+    - name
+    - surname
+  properties:
+    name:
+      type: string
+    surname:
+      type: string

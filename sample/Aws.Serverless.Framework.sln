@@ -1,0 +1,37 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "02-NanoServices", "02-NanoServices", "{E9890084-1C73-4686-8489-E4E32DB5BB76}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "User.Service", "User.Service\User.Service.njsproj", "{9685B592-B8F8-4B0B-861D-92DF2484EC44}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "999-Sam", "999-Sam", "{53F4C093-CD7E-404E-8BED-DC665F93910C}"
+	ProjectSection(SolutionItems) = preProject
+		template.yaml = template.yaml
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "01-CommonServices", "01-CommonServices", "{89134A69-ABCC-4248-9F65-10576642986B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{9685B592-B8F8-4B0B-861D-92DF2484EC44}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9685B592-B8F8-4B0B-861D-92DF2484EC44}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9685B592-B8F8-4B0B-861D-92DF2484EC44}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9685B592-B8F8-4B0B-861D-92DF2484EC44}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{9685B592-B8F8-4B0B-861D-92DF2484EC44} = {E9890084-1C73-4686-8489-E4E32DB5BB76}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {907B118C-58F8-441F-94F1-4FDD6FA3FD60}
+	EndGlobalSection
+EndGlobal
