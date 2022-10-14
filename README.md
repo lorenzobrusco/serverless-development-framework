@@ -1,7 +1,7 @@
 # Serverless Development Framework
 
-![Build Status](https://github.com/lorenzobrusco/serverless-development-framework/imgs/github-badge.svg)
-![Build Status](https://github.com/lorenzobrusco/serverless-development-framework/imgs/license.svg)
+![Build Status](https://github.com/lorenzobrusco/serverless-development-framework/blob/main/imgs//github-badge.svg)
+![Build Status](https://github.com/lorenzobrusco/serverless-development-framework/blob/main/imgs//license.svg)
 
 **The Serverless Development Framework** – Build applications on [AWS](https://aws.amazon.com/) using Lambda Api Gateway and other next-gen cloud services, that auto-scale and only charge you when they run. This lowers the total cost of running and operating your apps, enabling you to build more and manage less.
 
@@ -11,16 +11,16 @@ The Serverless Development Framework is used to transform your lambda functions 
 The mainly benefits is to limit the [cold start](https://aws.amazon.com/it/blogs/compute/operating-lambda-performance-optimization-part-1/) for each lambda.
 
 <p align="center">
-  <img alt="Cold Start Time per language" src="https://github.com/lorenzobrusco/serverless-development-framework/imgs/cold_start_runtime.jpg" width="45%">
+  <img alt="Cold Start Time per language" src="https://github.com/lorenzobrusco/serverless-development-framework/blob/main/imgs//cold_start_runtime.jpg" width="45%">
 &nbsp; &nbsp; &nbsp; &nbsp;
-  <img alt="Cold Start Time per size" src="https://github.com/lorenzobrusco/serverless-development-framework/imgs/cold_start_size.jpg" width="45%">
+  <img alt="Cold Start Time per size" src="https://github.com/lorenzobrusco/serverless-development-framework/blob/main/imgs//cold_start_size.jpg" width="45%">
 </p>
 
 Another very important library that you cloud integrate with **ASDF** is [webpack](https://webpack.js.org/) that allow us to reduce drastically the zip size.
 
 ### Architecture Example
 <p align="center">
-  <img alt="Architecture" src="https://github.com/lorenzobrusco/serverless-development-framework/imgs/architecture.svg" width="95%">
+  <img alt="Architecture" src="https://github.com/lorenzobrusco/serverless-development-framework/blob/main/imgs//architecture.svg" width="95%">
 </p>
 
 ## Contents
