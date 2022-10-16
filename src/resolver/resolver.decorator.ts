@@ -1,6 +1,7 @@
 import "reflect-metadata";
 import { routes } from "./resolver";
 import { EventType, Method } from "./resolver.event";
+import { IdpTye } from "./resolver.auth";
 
 interface Type<T> {
     new(...args: any[]): T;
@@ -50,19 +51,61 @@ export function Injectable<T>(target: Type<T>) {
  * @param type {EventType} - event type
  * @param method {Method} - event method
  * @param path {string} - event path
- * @param auth {Object} - userinfo, optionally
  * @constructor
  */
-export function EventPattern(type: EventType, method: Method, path: string, auth?: any) {
+export function EventPattern(type: EventType, method: Method, path: string) {
     return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
-        routes.push({
-            type: type,
-            method: method,
-            path: path,
-            class: target.constructor.name,
-            handler: descriptor.value.name,
-            auth: auth
-        })
+        var key = `__${target.constructor.name}__${descriptor.value.name}__`;
+        if (routes.has(key)) {
+            routes.set(key, {
+                ...routes.get(key),
+                type: type,
+                method: method,
+                path: path,
+                class: target.constructor.name,
+                handler: descriptor.value.name
+            });
+        } else {
+            routes.set(key, {
+                type: type,
+                method: method,
+                path: path,
+                class: target.constructor.name,
+                handler: descriptor.value.name,
+                auth: null
+            });
+        }
+    };
+}
+
+/**
+ * Set authorization  with different parameter
+ * @param type {IdpTye} - Identity provider type
+ * @param authorizations {string[]} - the set of authorizations
+ * @param handler {any} - the handler custom funcition
+ * @constructor
+ */
+ export function Authorizer(type: IdpTye, authorizations: string[], handler?: any) {
+    return function (target: any, propertyKey: string, descriptor: PropertyDescriptor) {
+        var key = `__${target.constructor.name}__${descriptor.value.name}__`;
+        if (routes.has(key)) {
+            routes.set(key, {
+                ...routes.get(key),
+                auth: {
+                    type: type,
+                    authorizations: authorizations,
+                    handler: handler
+                }
+            });
+        } else {
+            routes.set(key, {
+                auth: {
+                    type: type,
+                    roles: authorizations,
+                    handler: handler
+                }
+            });
+        }
     };
 }
 

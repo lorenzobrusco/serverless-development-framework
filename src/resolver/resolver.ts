@@ -1,14 +1,14 @@
-import * as pathMatching from "node-match-path";
 import { EventType } from "./resolver.event";
+import * as pathMatching from "node-match-path";
+import { Injector } from "./resolver.decorator";
 import { ResolverError } from "./resolver.error";
-import { authorizerHandel } from "./resolver.auth";
 import { FailedResponse } from "./resolver.response";
-import { Injector } from "./resolver.decotator";
+import { authorizerHandel, IdpTye } from "./resolver.auth";
 
 /**
  * A list of routes
  * */
-export const routes: object[] = [];
+export const routes = new Map<string, object>();
 
 /**
  * According to the event and routes passed
@@ -31,12 +31,21 @@ export async function handlerResolver(event: any, context: any): Promise<any> {
             resolver = await resolveRouting(event, routes, EventType.Api);
             let userinfo: any = undefined;
             if (resolver.auth != null) {
-                if (resolver.auth.handler == null) {
-                    userinfo = await authorizerHandel(event);
+                const authType = resolver.auth.type ?? IdpTye.COGNITO;
+                if (authType == IdpTye.CUSTOM) {
+                    if (resolver.auth.handler != null) {
+                        userinfo = await resolver.auth.handler(event);
+                    } else {
+                        console.log('Defined custom idp but not handle provided');
+                        return new FailedResponse(500, "Generic error");
+                    }
                 } else {
-                    userinfo = await resolver.auth.handler(event);
+                    userinfo = await authorizerHandel(event, authType);
                 }
-                const hasAuthorizations = resolver.auth.authorizations.every((val: any) => userinfo.roles.includes(val));
+                if (!userinfo && resolver.auth.authorizations.length > 0) {
+                    return new FailedResponse(401, "Unauthorized");
+                }
+                const hasAuthorizations = resolver.auth.authorizations.every((val: any) => userinfo.roles.has(val));
                 if (!hasAuthorizations) {
                     return new FailedResponse(403, "Forbidden");
                 }
@@ -46,6 +55,7 @@ export async function handlerResolver(event: any, context: any): Promise<any> {
             return await handler[`${resolver.handler}`](...args);
         }
     } catch (error) {
+        console.log('No resolved found');
         return new FailedResponse(500, "Generic error");
     }
 }
@@ -63,7 +73,7 @@ export async function resolveRouting(event: any, routes: any, eventType: EventTy
 
     let resolver = null;
 
-    for (const item of routes) {
+    for (const item of routes.values()) {
         if (resolver != null) {
             break;
         }
@@ -89,7 +99,8 @@ export async function resolveRouting(event: any, routes: any, eventType: EventTy
  * @returns {Object?} - item whether matching or null
  */
 async function apiRouting(event: any, item: any): Promise<any> {
-    let matched = pathMatching.match(item.path, event.path)
+    var path = item.path.replace('\/\/', '\/');
+    let matched = pathMatching.match(path, event.path)
     let match = event.httpMethod === item.method && matched.matches;
     return (match) ? item : null;
 }
