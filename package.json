@@ -1,6 +1,6 @@
 {
   "name": "serverless-development-framework",
-  "version": "0.0.3",
+  "version": "0.1.0",
   "description": "Serverless Development Framework",
   "license": "MIT",
   "engines": {
@@ -17,10 +17,13 @@
     "build:cjs": "tsc --module CommonJS --outDir dist/cjs"
   },
   "dependencies": {
+    "@aws-lambda-powertools/metrics": "^1.2.1",
+    "@aws-lambda-powertools/logger": "^1.2.1",
+    "@aws-lambda-powertools/tracer": "^1.2.1",
+    "@middy/core": "^3.1.0",
+    "@types/aws-lambda": "^8.10.107",
     "node-match-path": "^0.6.3",
-    "reflect-metadata": "^0.1.13",
-    "typescript-logging": "^2.0.2",
-    "typescript-logging-log4ts-style": "^2.0.2"
+    "reflect-metadata": "^0.1.13"
   },
   "devDependencies": {
     "typescript": "^4.8.0",
@@ -31,6 +34,7 @@
     "url": "git+https://github.com/lorenzobrusco/serverless-development-framework.git"
   },
   "keywords": [
+    "Nodejs",
     "Lambda",
     "Development",
     "Serverless",

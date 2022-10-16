@@ -1,22 +1,22 @@
-import { LogLevel } from "typescript-logging";
-import { Log4TSProvider, Logger } from "typescript-logging-log4ts-style";
+import { Logger } from '@aws-lambda-powertools/logger';
+import { Tracer } from '@aws-lambda-powertools/tracer';
+import { Metrics } from '@aws-lambda-powertools/metrics';
 
-/**
- * Base Component class 
- * */
 export abstract class BaseComponent {
 
-    private provider: Log4TSProvider;
     protected logger: Logger;
+    protected metrics: Metrics;
+    protected tracer: Tracer;
 
-    constructor(name: string) {
-        this.provider = Log4TSProvider.createProvider(`${name}Provider`, {
-            level: LogLevel.toLogLevel(process.env.LogLevel ?? 'Info') ?? LogLevel.Error,
-            groups: [{
-                expression: new RegExp(".+"),
-            }]
+    constructor(name?: string) {
+        name = `${name ?? this.constructor.name}`;
+        this.logger = new Logger({
+            logLevel: process.env.LogLevel ?? 'INFO',
+            serviceName: name
         });
-        this.logger = this.provider.getLogger(name);
+        this.tracer = new Tracer({ serviceName: name });
+        this.metrics = new Metrics({ namespace: name });
+        this.tracer.provider.setLogger(this.logger);
     }
 
 }
