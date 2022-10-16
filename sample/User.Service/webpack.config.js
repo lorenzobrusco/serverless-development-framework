@@ -1,5 +1,6 @@
 const path = require('path');
 const glob = require('glob');
+const TerserPlugin = require("terser-webpack-plugin");
 
 const entryArray = glob.sync('./app/index.ts');
 
@@ -11,7 +12,6 @@ const entryObject = entryArray.reduce((acc, item) => {
 
 module.exports = {
     entry: entryObject,
-    devtool: 'source-map',
     target: "node",
     module: {
         rules: [
@@ -30,12 +30,21 @@ module.exports = {
     resolve: {
         extensions: ['.tsx', '.ts', '.js'],
     },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    keep_classnames: true
+                }
+              })
+            ]
+      },
     externals: process.env.NODE_ENV === "development" ? [] : ["aws-sdk"],
     mode: process.env.NODE_ENV || "production",
     output: {
-        filename: '[name]/index.js',
+        filename: 'index.js',
         path: path.resolve(__dirname, 'dist'),
-        devtoolModuleFilenameTemplate: '[absolute-resource-path]',
-        libraryTarget: 'commonjs2'
+        libraryTarget: 'commonjs2',
     }
 };

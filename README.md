@@ -16,7 +16,76 @@ The mainly benefits is to limit the [cold start](https://aws.amazon.com/it/blogs
   <img alt="Cold Start Time per size" src="https://github.com/lorenzobrusco/serverless-development-framework/blob/main/imgs//cold_start_size.jpg" width="45%">
 </p>
 
-Another very important library that you cloud integrate with **ASDF** is [webpack](https://webpack.js.org/) that allow us to reduce drastically the zip size.
+#### Webpack
+A very important library that you cloud integrate with **SDF** is [webpack](https://webpack.js.org/) that allow us to reduce drastically the zip size. This reduce the time of could start because trasform all your code in just one file.
+Launch the following command to install it:
+```bash
+npm install -g webpack webpack-cli
+```
+An example of webpack configuration that works with AWS lambda.
+
+**webpack.config.js**
+
+
+```javascript
+const path = require('path');
+const glob = require('glob');
+const TerserPlugin = require("terser-webpack-plugin");
+
+const entryArray = glob.sync('./app/index.ts');
+
+const entryObject = entryArray.reduce((acc, item) => {
+    let name = path.dirname(item.replace("app", ""))
+    acc[name] = item
+    return acc;
+}, {});
+
+module.exports = {
+    entry: entryObject,
+    target: "node",
+    module: {
+        rules: [
+            {
+                test: /\.ts$/,
+                loader: 'babel-loader',
+                exclude: ['/node_modules/', '/tests/']
+            },
+            {
+                test: /\.tsx?$/,
+                use: 'ts-loader',
+                exclude: ['/node_modules/', '/tests/']
+            }
+        ],
+    },
+    resolve: {
+        extensions: ['.tsx', '.ts', '.js'],
+    },
+    optimization: {
+        minimize: true,
+        minimizer: [
+            new TerserPlugin({
+                terserOptions: {
+                    keep_classnames: true
+                }
+              })
+            ]
+      },
+    externals: process.env.NODE_ENV === "development" ? [] : ["aws-sdk"],
+    mode: process.env.NODE_ENV || "production",
+    output: {
+        filename: 'index.js',
+        path: path.resolve(__dirname, 'dist'),
+        libraryTarget: 'commonjs2',
+    }
+};
+```
+
+
+#### AWS Powertools
+
+**SDF**  integrate AWS Lambda Powertools for TypeScript provides a suite of utilities for AWS Lambda functions running on the Node.js runtime, to ease the adoption of best practices such as tracing, structured logging, custom metrics, and more.
+For more details see [aws powertools](https://awslabs.github.io/aws-lambda-powertools-typescript/latest/).
+
 
 ### Architecture Example
 <p align="center">
@@ -64,6 +133,63 @@ Parameters:
 
 Example:
 ```typescript
+@EventPattern(EventType.Api, Method.GET, `v1/api/user/`)
+public function test() {}
+```
+
+#### Authorizer
+Function Decorator, it allows to preauthorizer function check whether caller has the necessary authorization.
+
+Parameters: 
+- EventType
+    - IdpTye.COGNITO: Claims has the cognito standard, example "cognito:groups": ["role1", "role2"]
+    - IdpTye.WSO2:  Claims has the wso2 standard, example "groups": "role1,,role2"
+    - IdpTye.Custom: Developer define how to extract claims from requestContext
+- Authorizations: a list of roles, authorizer check that all element inside this list should be present inside claims. 
+
+- Handler: a custom function to extraxt authorization
+
+In order to use Authorizer the lambda event guarantee this structure:
+```typescript
+{
+    ...
+    requestContext: {
+        authorizer: {
+            claims: {
+                aud: 'string',
+                iss: 'string',
+                exp: 'number',
+                iat: 'number',
+                sub: 'string',
+                "cognito:groups": ['role_1', ... 'role_N'] # For Cognito
+                "groups": 'role_1,,...,,role_N' # For Wso2
+            }
+        }
+    }
+    ...
+}
+```
+
+**Hint**
+Use Api Gateway to handle the authentication and delegate to your code only the authorization step.
+
+
+Example:
+```typescript
+@Authorizer(IdpTye.COGNITO, ['test'])
+@EventPattern(EventType.Api, Method.GET, `v1/api/user/`)
+public function test() {}
+
+
+/**
+ * Custom Handle
+ **/
+@Authorizer(IdpTye.CUSTOM, ['test'], async (event: any) => {
+    return {
+        email: event?.requestContext?.authorizer?.claims?.email ?? undefined,
+        roles: new Set<string>(['test'])
+    }
+})
 @EventPattern(EventType.Api, Method.GET, `v1/api/user/`)
 public function test() {}
 ```
@@ -157,14 +283,15 @@ Example:
 public function test(@RequestContext context: any) {}
 ```
 
-#### UserInfo [`preview`]
+#### UserInfo
 UserInfo Decorator, it used to extract user info from Lambda context input.
 
 Constraints:
- It Must be used together @EventPattern 
+ It Must be used together @EventPattern and @Authorizer
 
 Example:
 ```typescript
+@Authorizer(IdpTye.COGNITO, [])
 @EventPattern(EventType.Api, Method.GET, `v1/api/user/`)
 public function test(@UserInfo userInfo?: any) {}
 ```
@@ -201,7 +328,7 @@ export class UserController extends BaseComponent {
 
     constructor(
         private readonly service: UserService) {
-        super('UserController');
+        super();
     }
 
     /**
@@ -225,6 +352,6 @@ export class UserController extends BaseComponent {
 }
 ```
 ## <a name="licensing"></a>Licensing
-AWS Serverless Development Framework  is licensed under the [MIT License](./LICENSE.txt).
+AWS Serverless Development Framework  is licensed under the `MIT` License
 
 All files located in the node_modules and external directories are externally maintained libraries used by this software which have their own licenses; we recommend you read them, as their terms may differ from the terms in the MIT License.
