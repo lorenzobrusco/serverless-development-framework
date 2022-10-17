@@ -21,11 +21,11 @@ export enum IdpTye {
 export interface ClaimsBase {
     [name: string]: any;
 
-    aud: string;
-    iss: string;
-    exp: number;
-    iat: number;
-    sub: string;
+    aud?: string;
+    iss?: string;
+    exp?: number;
+    iat?: number;
+    sub?: string;
     roles?: Set<string>;
     email?: string;
     email_verified?: string;
