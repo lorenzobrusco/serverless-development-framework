@@ -5,7 +5,7 @@ import { Injectable } from "serverless-development-framework";
 export class UserService extends BaseComponent {
 
     constructor() {
-        super('UserService');
+        super();
     }
 
     /**
