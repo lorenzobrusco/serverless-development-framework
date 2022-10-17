@@ -2,7 +2,10 @@ name: Release
 
 on:
   push:
-    branches: [ "feature/cicd" ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
+
 
 jobs:
   release:
