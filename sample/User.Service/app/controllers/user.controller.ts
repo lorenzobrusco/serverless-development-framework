@@ -1,7 +1,7 @@
 import { UserService } from "../services/user.service";
-import { BaseComponent } from "serverless-development-framework";
 import { NANOSERVICE } from "../configurations/configuration";
 import { EventType, Method } from "serverless-development-framework";
+import { Authorizer, BaseComponent, IdpTye } from "serverless-development-framework";
 import { BaseResponse, SuccessResponse, FailedResponse } from "serverless-development-framework";
 import { EventPattern, Injectable, RequestBody, PathParameter, UserInfo, QueryParameter } from "serverless-development-framework";
 
@@ -11,7 +11,7 @@ export class UserController extends BaseComponent {
 
     constructor(
         private readonly service: UserService) {
-        super('UserController');
+        super();
     }
 
     /**
@@ -19,6 +19,7 @@ export class UserController extends BaseComponent {
      * @param userInfo {any} - user info from token
      * @returns {BaseResponse} 
      */
+    @Authorizer(IdpTye.COGNITO, ['test'])
     @EventPattern(EventType.Api, Method.GET, `${NANOSERVICE}/`)
     public async getAllUser(@UserInfo userInfo?: any): Promise<BaseResponse> {
         try {
@@ -38,6 +39,7 @@ export class UserController extends BaseComponent {
      * @param userInfo {any} - user info from token
      * @returns {BaseResponse} 
      */
+    @Authorizer(IdpTye.COGNITO, ['test'])
     @EventPattern(EventType.Api, Method.GET, `${NANOSERVICE}/:userId`)
     public async getUser(@PathParameter('userId') userId: string, @UserInfo userInfo?: any): Promise<BaseResponse> {
         try {
@@ -59,6 +61,7 @@ export class UserController extends BaseComponent {
      * @param userInfo {any} - user info from token
      * @returns {BaseResponse} 
      */
+    @Authorizer(IdpTye.COGNITO, ['test'])
     @EventPattern(EventType.Api, Method.GET, `${NANOSERVICE}/:userId/filter`)
     public async getUserFiltered(@PathParameter('userId') userId: string, @QueryParameter("region") region: string, @QueryParameter("culture") culture?: string, @UserInfo userInfo?: any): Promise<BaseResponse> {
         try {
@@ -78,6 +81,7 @@ export class UserController extends BaseComponent {
      * @param userInfo {any} - user info from token
      * @returns {BaseResponse} 
      */
+    @Authorizer(IdpTye.COGNITO, ['test'])    
     @EventPattern(EventType.Api, Method.DELETE, `${NANOSERVICE}/:userId`)
     public async deleteUser(@PathParameter('userId') userId: string, @UserInfo userInfo?: any): Promise<BaseResponse> {
         try {
@@ -97,6 +101,7 @@ export class UserController extends BaseComponent {
      * @param userInfo {any} - user info from token
      * @returns {BaseResponse} 
      */
+    @Authorizer(IdpTye.COGNITO, ['test'])
     @EventPattern(EventType.Api, Method.POST, `${NANOSERVICE}`)
     public async createUser(@RequestBody body: any, @UserInfo userInfo?: any): Promise<BaseResponse> {
         try {
