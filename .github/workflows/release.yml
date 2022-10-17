@@ -16,7 +16,8 @@ jobs:
         with:
           node-version: 16
           registry-url: https://registry.npmjs.org
-      - run: ls -l
+      - name: install-package
+        run: npm i
       - name: build
         run: npm run build 
       - name: publish
