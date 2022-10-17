@@ -1,6 +1,6 @@
 {
   "name": "serverless-development-framework",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Serverless Development Framework",
   "license": "MIT",
   "engines": {
