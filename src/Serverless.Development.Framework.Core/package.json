@@ -1,6 +1,6 @@
 {
   "name": "serverless-development-framework",
-  "version": "0.1.1",
+  "version": "1.0.0",
   "description": "Serverless Development Framework",
   "license": "MIT",
   "engines": {
@@ -12,8 +12,10 @@
     "dist"
   ],
   "scripts": {
-    "build": "npm run build:esm && npm run build:cjs",
-    "build:esm": "tsc",
+    "build": "tsc --build",
+    "clean": "tsc --build --clean",
+    "package": "npm run build:esm && npm run build:cjs",
+    "build:esm": "tsc --outDir dist/esm",
     "build:cjs": "tsc --module CommonJS --outDir dist/cjs"
   },
   "dependencies": {

@@ -22,11 +22,16 @@ export async function handlerResolver(event: any, context: any): Promise<any> {
     try {
         let resolver: any;
         if (event.Records != null) {
-            resolver = await resolveRouting(event, routes, EventType.AwsEvent);
-            await resolver.handler(event);
+            const record = event.Records[0] ?? {};
+            resolver = await resolveRouting(record, routes, EventType.AwsEvent);
+            const handler = Injector.get(resolver.class);
+            const args = await extractApiArgs(record, context, handler, resolver.handler);
+            return await handler[`${resolver.handler}`](...args);
         } else if (event['detail-type'] !== undefined) {
             resolver = await resolveRouting(event, routes, EventType.CustomEvent);
-            await resolver.handler(event);
+            const handler = Injector.get(resolver.class);
+            const args = await extractApiArgs(event, context, handler, resolver.handler);
+            return await handler[`${resolver.handler}`](...args);
         } else {
             resolver = await resolveRouting(event, routes, EventType.Api);
             let userinfo: any = undefined;
@@ -112,7 +117,8 @@ async function apiRouting(event: any, item: any): Promise<any> {
  * @returns {Object?} - item whether matching or null
  */
 async function awsEventRouting(event: any, item: any): Promise<any> {
-    return item;
+    let match = event.eventSource == item.method;
+    return (match) ? item : null;
 }
 
 /**
@@ -122,7 +128,16 @@ async function awsEventRouting(event: any, item: any): Promise<any> {
  * @returns {Object?} - item whether matching or null
  */
 async function customEventRouting(event: any, item: any): Promise<any> {
-    return item;
+    var path = item.path.replace('\/\/', '\/');
+    var detail = null;
+    if (event.detail instanceof Array) {
+        detail = event.detail[0];
+    }
+    else {
+        detail = event.detail;
+    }
+    let matched = pathMatching.match(path, detail.__topic__);
+    return (matched.matches) ? item : null;
 }
 
 /**
@@ -138,7 +153,11 @@ async function extractApiArgs(event: any, context: any, handler: any, functionNa
     for (const arg of Reflect.get(handler, 'args') ?? []) {
         if (arg.key === functionName) {
             if (arg.type === 'body') {
-                args.unshift(JSON.parse(event.body) ?? undefined)
+                let body = event.body ?? undefined;
+                try {
+                    body = JSON.parse(event.body)
+                } catch { }
+                args.unshift(body ?? undefined);
             } else if (arg.type === 'path') {
                 args.unshift(event['pathParameters'][arg.value] ?? undefined);
             } else if (arg.type === 'query') {

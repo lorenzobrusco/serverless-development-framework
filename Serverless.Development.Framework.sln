@@ -1,0 +1,52 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32929.385
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "00-Core", "00-Core", "{83588C2B-6328-4CF4-90AE-7E791CAD9548}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Serverless.Development.Framework.Core", "src\Serverless.Development.Framework.Core\Serverless.Development.Framework.Core.njsproj", "{833FC1BD-4219-4EFA-8AE7-C0DC9EBFC1CF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "990-Tests", "990-Tests", "{E663E1CD-3993-4E2E-AEF1-B7A1E7A4E41E}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "991-UnitTest", "991-UnitTest", "{9D25BFD9-2C44-4AAC-BA78-84422F2898DF}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "992-IntegrationTest", "992-IntegrationTest", "{ADA90EFA-4519-4E2D-ABAF-3887F4FE64CA}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Serverless.Development.Framework.Core.Tests", "tests\Serverless.Development.Framework.Core.Tests\Serverless.Development.Framework.Core.Tests.njsproj", "{88661520-7E2F-462D-8084-B48DCCE4CEC6}"
+EndProject
+Project("{9092AA53-FB77-4645-B42D-1CCCA6BD08BD}") = "Serverless.Development.Framework.Integration.Test", "tests\Serverless.Development.Framework.Integration.Test\Serverless.Development.Framework.Integration.Test.njsproj", "{A491F97A-EE59-4F8F-B0D8-9DE7E9A08C5B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{833FC1BD-4219-4EFA-8AE7-C0DC9EBFC1CF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{833FC1BD-4219-4EFA-8AE7-C0DC9EBFC1CF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{833FC1BD-4219-4EFA-8AE7-C0DC9EBFC1CF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{833FC1BD-4219-4EFA-8AE7-C0DC9EBFC1CF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{88661520-7E2F-462D-8084-B48DCCE4CEC6}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{88661520-7E2F-462D-8084-B48DCCE4CEC6}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{88661520-7E2F-462D-8084-B48DCCE4CEC6}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{88661520-7E2F-462D-8084-B48DCCE4CEC6}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A491F97A-EE59-4F8F-B0D8-9DE7E9A08C5B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A491F97A-EE59-4F8F-B0D8-9DE7E9A08C5B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A491F97A-EE59-4F8F-B0D8-9DE7E9A08C5B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A491F97A-EE59-4F8F-B0D8-9DE7E9A08C5B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{833FC1BD-4219-4EFA-8AE7-C0DC9EBFC1CF} = {83588C2B-6328-4CF4-90AE-7E791CAD9548}
+		{9D25BFD9-2C44-4AAC-BA78-84422F2898DF} = {E663E1CD-3993-4E2E-AEF1-B7A1E7A4E41E}
+		{ADA90EFA-4519-4E2D-ABAF-3887F4FE64CA} = {E663E1CD-3993-4E2E-AEF1-B7A1E7A4E41E}
+		{88661520-7E2F-462D-8084-B48DCCE4CEC6} = {9D25BFD9-2C44-4AAC-BA78-84422F2898DF}
+		{A491F97A-EE59-4F8F-B0D8-9DE7E9A08C5B} = {ADA90EFA-4519-4E2D-ABAF-3887F4FE64CA}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {2E1D869D-9B4E-4DEC-98E3-3EFADD9436F6}
+	EndGlobalSection
+EndGlobal
