@@ -1,6 +1,9 @@
 dist/
 .vscode/
 node_modules/
-tests/
 package-lock.json
 **/.vs/
+**/bin/
+**/obj/
+**/*.d.ts
+**/*.d.ts.map

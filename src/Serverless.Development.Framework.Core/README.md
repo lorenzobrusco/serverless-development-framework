@@ -124,11 +124,10 @@ Function Decorator, it allows to routing the traffic from Api Gateway to a speci
 Parameters: 
 - EventType
     - EventType.Api: catch api request
-    - EventType.AwsEvent: catch aws event input [`preview`]
-    - EventType.CustomEvent: catch custom event [`preview`]
+    - EventType.AwsEvent: catch aws event input
+    - EventType.CustomEvent: catch custom event 
 - Method:
-    - GET | POST | PUT | DELETE | PATCH
-    - S3 | SQS | SNS | ANY  [`preview`]
+    - GET | POST | PUT | DELETE | PATCH | S3 | SQS | SNS | ANY 
 - Path: a string that match with resource path inside event input
 
 Example:
